@@ -1,0 +1,18 @@
+# Use Rocker's Tidyverse base image (has R, RStudio, tidyverse pre-installed)
+FROM rocker/tidyverse:4.3.0
+
+# Set working directory
+WORKDIR /home/census-project
+
+# Copy R scripts
+COPY requirements.R .
+COPY scripts/ scripts/
+
+# Install required R packages
+RUN Rscript requirements.R
+
+# Create data directories
+RUN mkdir -p data/raw data/processed output
+
+# Default command - run the data pipeline
+CMD ["Rscript", "scripts/01_fetch_data.R && Rscript scripts/02_create_map.R"]
