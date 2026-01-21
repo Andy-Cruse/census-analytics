@@ -6,11 +6,10 @@ library(htmlwidgets)
 library(ggplot2)
 
 # Load processed data
-spatial_data <- readRDS("data/processed/state_spatial_data.rds")
+spatial_data <- readRDS("data/processed/county_spatial_data.rds")
 
 # Convert to Web Mercator for Leaflet
-spatial_data_wm <- st_transform(spatial_data, crs = 4326) |>
-  filter(!state_fips %in% c("60", "78", "66", "69", "72"))  # remove territories except DC
+spatial_data_wm <- st_transform(spatial_data, crs = 4326) 
 
 # Create color palette based on population density
 pal <- colorNumeric(
@@ -35,7 +34,7 @@ map <- leaflet(spatial_data_wm) %>%
       bringToFront = TRUE
     ),
     label = ~paste(
-      state_name, 
+      county_name, 
       "<br>Population: ", format(population, big.mark = ","),
       "<br>Density: ", round(pop_density, 1), " people/km²"
     ) %>% lapply(htmltools::HTML),

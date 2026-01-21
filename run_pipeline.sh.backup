@@ -1,0 +1,27 @@
+#!/bin/bash
+
+echo "=== US Census Geospatial Pipeline ==="
+echo ""
+
+# Step 1: Install packages if needed
+echo "1. Checking/installing R packages..."
+Rscript requirements.R
+
+# Step 2: Fetch and process data
+echo ""
+echo "2. Fetching Census data and shapefiles..."
+Rscript scripts/01_fetch_data.R
+
+# Step 3: Create visualizations
+echo ""
+echo "3. Creating maps..."
+Rscript scripts/02_create_map.R
+
+echo ""
+echo "=== PIPELINE COMPLETE ==="
+echo "Output files:"
+echo "  - data/processed/state_spatial_data.rds"
+echo "  - output/us_population_density_map.html"
+echo "  - output/us_population_density_static.png"
+echo ""
+echo "Open output/us_population_density_map.html in your browser!"

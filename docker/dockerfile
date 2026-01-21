@@ -1,18 +1,21 @@
-# Use Rocker's Tidyverse base image (has R, RStudio, tidyverse pre-installed)
+# Smaller alternative
 FROM rocker/tidyverse:4.3.0
 
-# Set working directory
-WORKDIR /home/census-project
+WORKDIR /app
 
-# Copy R scripts
-COPY requirements.R .
-COPY scripts/ scripts/
+# Install system dependencies for spatial packages
+RUN apt-get update && \
+    apt-get install -y \
+    libudunits2-dev \
+    libgdal-dev \
+    libgeos-dev \
+    libproj-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install required R packages
-RUN Rscript requirements.R
+# Install only what you need
+RUN R -e "install.packages(c('tidycensus', 'tigris', 'leaflet'))"
 
-# Create data directories
+COPY scripts/ ./scripts/
 RUN mkdir -p data/raw data/processed output
 
-# Default command - run the data pipeline
-CMD ["Rscript", "scripts/01_fetch_data.R && Rscript scripts/02_create_map.R"]
+CMD ["sh", "-c", "Rscript scripts/01_fetch_data.R && Rscript scripts/02_create_map.R"]
