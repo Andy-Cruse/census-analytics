@@ -1,27 +1,45 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-echo "=== US Census Geospatial Pipeline ==="
+echo "=== US Census Pipeline ==="
+echo "Starting at: $(date)"
 echo ""
 
-# Step 1: Install packages if needed
-echo "1. Checking/installing R packages..."
-Rscript requirements.R
-
-# Step 2: Fetch and process data
+# Show current directory
+echo "Working in: $(pwd)"
 echo ""
-echo "2. Fetching Census data and shapefiles..."
-Rscript scripts/01_fetch_data.R
+
+# Step 1: Install packages
+echo "--- Step 1: Installing R packages ---"
+if command -v Rscript >/dev/null 2>&1; then
+    Rscript requirements.R
+else
+    echo "ERROR: Rscript not found"
+    exit 1
+fi
+echo ""
+
+# Step 2: Fetch data
+echo "--- Step 2: Fetching data ---"
+if [ -f "scripts/01_fetch_data.R" ]; then
+    Rscript scripts/01_fetch_data.R
+else
+    echo "ERROR: scripts/01_fetch_data.R not found"
+    exit 1
+fi
+echo ""
 
 # Step 3: Create visualizations
+echo "--- Step 3: Creating visualizations ---"
+if [ -f "scripts/02_create_map.R" ]; then
+    Rscript scripts/02_create_map.R
+else
+    echo "ERROR: scripts/02_create_map.R not found"
+    exit 1
+fi
 echo ""
-echo "3. Creating maps..."
-Rscript scripts/02_create_map.R
 
+echo "=== Pipeline Complete ==="
+echo "Finished at: $(date)"
 echo ""
-echo "=== PIPELINE COMPLETE ==="
 echo "Output files:"
-echo "  - data/processed/state_spatial_data.rds"
-echo "  - output/us_population_density_map.html"
-echo "  - output/us_population_density_static.png"
-echo ""
-echo "Open output/us_population_density_map.html in your browser!"
+find output -type f 2>/dev/null | head -10
