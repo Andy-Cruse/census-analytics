@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: census-daily-etl
 spec:
-  schedule: "*/5 * * * *"  # Run every 5 mins
+  schedule: "*0 * * * *"  # Run every hour
   jobTemplate:
     spec:
       template:
