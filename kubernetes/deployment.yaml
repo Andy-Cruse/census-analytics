@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: census-deployment
+  labels:
+    app: census-analytics
+spec:
+  replicas: 1  # Start with 1, scale to more if needed
+  selector:
+    matchLabels:
+      app: census-analytics
+  template:
+    metadata:
+      labels:
+        app: census-analytics
+    spec:
+      containers:
+      - name: census-container
+        image: census-analytics:latest  # Your Docker image
+        imagePullPolicy: IfNotPresent  # Use local image
+        volumeMounts:
+        - name: output-volume
+          mountPath: /app/output  # Where your R scripts save files
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+      volumes:
+      - name: output-volume
+        persistentVolumeClaim:
+          claimName: census-output-pvc

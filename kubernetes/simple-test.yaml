@@ -1,0 +1,12 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: simple-test
+spec:
+  template:
+    spec:
+      containers:
+      - name: test
+        image: census-analytics:latest
+        command: ["echo", "Kubernetes test successful!"]
+      restartPolicy: Never

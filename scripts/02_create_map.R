@@ -78,6 +78,4 @@ static_plot <- ggplot(spatial_data) +
 ggsave("output/us_population_density_static.png", static_plot, 
        width = 10, height = 6, dpi = 300)
 cat("Static map saved: output/us_population_density_static.png\n")
-
-# Open the HTML map in browser
-browseURL("output/us_population_density_map.html")
+cat(paste0("System Time: ", Sys.Time(), "\n"))

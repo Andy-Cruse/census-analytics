@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: census-daily-etl
+spec:
+  schedule: "*/5 * * * *"  # Run every 5 mins
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: census-cron
+            image: census-analytics:latest
+            imagePullPolicy: IfNotPresent
+            command: ["sh", "-c"]
+            args:
+              - |
+                echo "Starting scheduled ETL run at $(date)"
+                Rscript scripts/01_fetch_data.R
+                Rscript scripts/02_create_map.R
+                echo "Completed at $(date)"
+            volumeMounts:
+            - name: output-volume
+              mountPath: /app/output
+          restartPolicy: OnFailure
+          volumes:
+          - name: output-volume
+            emptyDir: {}

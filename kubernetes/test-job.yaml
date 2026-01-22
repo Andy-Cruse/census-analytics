@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: census-test-run
+spec:
+  template:
+    spec:
+      containers:
+      - name: test-container
+        image: census-analytics:latest
+        imagePullPolicy: IfNotPresent
+        command: ["sh", "-c"]
+        args:
+          - |
+            echo "=== Test ETL Run ==="
+            date
+            Rscript scripts/01_fetch_data.R
+            Rscript scripts/02_create_map.R
+            echo "Files created:"
+            ls -la /app/output/
+      restartPolicy: Never

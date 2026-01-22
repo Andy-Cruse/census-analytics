@@ -18,4 +18,4 @@ RUN R -e "install.packages(c('tidycensus', 'tigris', 'leaflet'))"
 COPY scripts/ ./scripts/
 RUN mkdir -p data/raw data/processed output
 
-CMD ["sh", "-c", "Rscript scripts/01_fetch_data.R && Rscript scripts/02_create_map.R"]
+CMD ["sh", "-c", "Rscript scripts/01_fetch_data.R && Rscript scripts/02_create_map.R && tail -f /dev/null"]
